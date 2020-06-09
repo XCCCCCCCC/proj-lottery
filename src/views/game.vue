@@ -116,7 +116,7 @@ export default {
       }, 200)
       this.updateActiveIndex(-1)
       this.showPrize = false
-      this.startTime = Date.now()
+
       this.speed = 200
       this.diff = 15
       // 获取
@@ -127,6 +127,7 @@ export default {
       if (!res) {
         return false
       }
+      this.startTime = Date.now()
       this.finished = false
       this.play()
     },
