@@ -52,7 +52,9 @@ export default {
       return this.square.basic.description.replace(reg, '<br/>')
     },
     prize() {
-      return this.square.awards[this.prizeIndex]
+      // console.log(this.square.awards[this.prizeIndex])
+      return this.square.images[this.prizeIndex] || {}
+      // return {}
     },
     showLoading: {
       get() {
@@ -132,7 +134,7 @@ export default {
       this.play()
     },
     done() {
-      this.$toast({ message: '领取成功', duration: 800 })
+      this.$toast({ message: '领取后进入小程序我的优惠券查看', duration: 1500 })
       this.updateActiveIndex(-1)
       this.showPrize = false
     },
@@ -149,35 +151,35 @@ export default {
     <img :src="square.pBg" />
     <div v-show="showPrize" class="prize-wrapper">
       <div class="prize-wrapper__tip" :style="prizeStyle" @click="done">
-        <p>{{prize.text1}}</p>
-        <p>{{prize.text2}}</p>
+        <img :src="prize.path" />
+        <!-- <img src="/uploads/20200528180708_6812.png" /> -->
       </div>
     </div>
     <div class="game-wrapper">
       <div class="game-wrapper__box has-margin" :style="activeIndex == 0 ? aBoxStyle : nBoxStyle">
-        <img :src="square.images[0].path" />
+        <img v-if="square.images[0]" :src="square.images[0].path" />
       </div>
       <div class="game-wrapper__box has-margin" :style="activeIndex == 1 ? aBoxStyle : nBoxStyle">
-        <img :src="square.images[1].path" />
+        <img v-if="square.images[1]" :src="square.images[1].path" />
       </div>
       <div class="game-wrapper__box has-margin" :style="activeIndex == 2 ? aBoxStyle : nBoxStyle">
-        <img :src="square.images[2].path" />
+        <img v-if="square.images[2]" :src="square.images[2].path" />
       </div>
       <div class="game-wrapper__box has-margin" :style="activeIndex == 7 ? aBoxStyle : nBoxStyle">
-        <img :src="square.images[7].path" />
+        <img v-if="square.images[7]" :src="square.images[7].path" />
       </div>
       <div class="game-wrapper__box has-margin" :style="startBoxStyle" @click="init"></div>
       <div class="game-wrapper__box has-margin" :style="activeIndex == 3 ? aBoxStyle : nBoxStyle">
-        <img :src="square.images[3].path" />
+        <img v-if="square.images[3]" :src="square.images[3].path" />
       </div>
       <div class="game-wrapper__box" :style="activeIndex == 6 ? aBoxStyle : nBoxStyle">
-        <img :src="square.images[6].path" />
+        <img v-if="square.images[6]" :src="square.images[6].path" />
       </div>
       <div class="game-wrapper__box" :style="activeIndex == 5 ? aBoxStyle : nBoxStyle">
-        <img :src="square.images[5].path" />
+        <img v-if="square.images[5]" :src="square.images[5].path" />
       </div>
       <div class="game-wrapper__box" :style="activeIndex == 4 ? aBoxStyle : nBoxStyle">
-        <img :src="square.images[4].path" />
+        <img v-if="square.images[4]" :src="square.images[4].path" />
       </div>
     </div>
     <div class="description-wrapper" :style="dBoxStyle">
@@ -198,20 +200,22 @@ export default {
     height: auto;
   }
   .prize-wrapper {
-    @include flex-center();
+    @include flex-center(x);
     position: absolute;
     top: 0;
-    bottom: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     z-index: 1;
+    padding-top: 120px;
     background: rgba($color: #000000, $alpha: 0.6);
     &__tip {
+      @include flex-center(y);
       box-sizing: border-box;
-      width: 195px;
-      height: 260px;
+      width: 309px;
+      height: 375px;
       background-size: cover;
-      padding: 155px 40px 0 40px;
+      padding: 0 80px 0 80px;
       @include text-size(20px, 28px);
       font-weight: bold;
       color: #000;
@@ -220,10 +224,10 @@ export default {
   }
   .game-wrapper {
     position: absolute;
-    top: 178px;
-    left: calc(50% - 168px);
-    width: 336px;
-    height: 336px;
+    top: 310px;
+    left: calc(50% - 156px);
+    width: 312px;
+    height: 312px;
     // 盒模型布局
     display: flex;
     align-content: flex-start;
@@ -231,8 +235,8 @@ export default {
     flex-wrap: wrap;
     .game-wrapper__box {
       position: abosulte;
-      width: 110px;
-      height: 110px;
+      width: 101px;
+      height: 101px;
       // background-color: #000;
       background-size: cover;
       overflow: hidden;
@@ -240,7 +244,7 @@ export default {
         margin-bottom: 3px;
       }
       img {
-        width: 110px;
+        width: 101px;
         height: auto;
       }
     }
@@ -248,11 +252,12 @@ export default {
   .description-wrapper {
     position: relative;
     box-sizing: border-box;
-    padding: 40px 20px 10px 20px;
-    height: 200px;
+    padding: 70px 20px 10px 20px;
+    height: 295px;
     background-size: cover;
     text-align: left;
-    @include text-size(12px, 18px);
+    @include text-size(12px, 24px);
+    color: #cfc4af;
   }
 }
 </style>
