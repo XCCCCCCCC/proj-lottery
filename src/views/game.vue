@@ -70,8 +70,8 @@ export default {
     // if (!this.$route.query.id || !this.$route.query.user) {
     if (!this.$route.query.user) {
       this.updateAvailable(false)
-      this.$toast('活动异常')
-      return false
+      // this.$toast('活动异常')
+      // return false
     }
     // this.updateId(this.$route.query.id)
     this.updateUser(this.$route.query.user)
@@ -106,7 +106,7 @@ export default {
     },
     init() {
       if (!this.available) {
-        this.$toast('活动异常')
+        this.$toast('缺少openid')
         return false
       }
       if (!this.finished) {
