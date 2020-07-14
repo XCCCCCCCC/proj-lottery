@@ -32,7 +32,7 @@ module.exports = {
         changeOrigin: true,
       },
       '/uploads': {
-        target: 'http://10.8.8.230:18004/',
+        target: 'http://10.8.8.230:18005/',
         ws: true,
         changeOrigin: true,
       },
