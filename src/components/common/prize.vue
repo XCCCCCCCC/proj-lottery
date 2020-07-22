@@ -13,7 +13,7 @@ export default {
       square: state => state.square,
     }),
     prize() {
-      return this.square.awards[this.square.prizeIndex]
+      return this.square.curPrize
     },
   },
   watch: {},
@@ -21,6 +21,12 @@ export default {
   methods: {
     moment: moment,
     ...mapMutations('square', ['updateShowPrize']),
+    onCopy() {
+      this.$toast('内容已复制到剪贴板')
+    },
+    onError() {
+      this.$toast('复制失败')
+    },
     returnUseDaysItem() {
       function returnDay(val) {
         switch (val) {
@@ -70,7 +76,12 @@ export default {
           >使用期限：{{prize.datetimeRange[0]}}&nbsp;至&nbsp;{{prize.datetimeRange[1]}}</div>
           <div class="prize-summary-code">
             <div class="prize-summary-code__code">优惠码：888888</div>
-            <div class="prize-summary-code__copy-btn">复制</div>
+            <div
+              class="prize-summary-code__copy-btn"
+              v-clipboard:copy="'888888'"
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onError"
+            >复制</div>
           </div>
           <div class="prize-summary__btn">立即兑奖</div>
           <div class="prize-summary__tip">{{prize.tip}}</div>
@@ -85,9 +96,9 @@ export default {
             <span class="label">可用时段：</span>
             <span class="item">{{returnUseDaysItem()}}</span>
           </div>
-          <div class="label-item">
+          <div class="label-item" v-show="prize.shouldKnow">
             <span class="label">使用须知：</span>
-            <span class="item">{{prize.shouldKnow||'不填写则不显示'}}</span>
+            <span class="item">{{prize.shouldKnow}}</span>
           </div>
         </div>
         <div class="prize-contact">
@@ -199,6 +210,7 @@ export default {
         flex-direction: column;
         padding: 15px 10px;
         border-bottom: 1px dashed #d8dde6;
+        text-align: left;
         .categroy {
           @include text-size(14px, 20px);
           color: rgba($color: #000000, $alpha: 0.85);

@@ -11,11 +11,19 @@ export default {
     ...mapState({
       square: state => state.square,
     }),
+    prize() {
+      return this.square.awards[this.square.prizeIndex]
+    },
   },
   watch: {},
   mounted() {},
   methods: {
-    ...mapMutations('square', ['updateShowWin', 'updateShowPrize']),
+    ...mapMutations('square', ['updateShowWin', 'updateShowPrize', 'updateCurPrize']),
+    toDetail() {
+      this.updateCurPrize(this.square.awards[this.square.prizeIndex])
+      this.updateShowWin(false)
+      this.updateShowPrize(true)
+    },
   },
 }
 </script>
@@ -27,10 +35,10 @@ export default {
       <i class="el-icon-circle-close"></i>
     </div>
     <img src="@/assets/images/prize.png" />
-    <div class="prize">奖品：玩具品牌9.9折优惠券</div>
+    <div class="prize">{{prize.name}}</div>
     <div class="control">
-      <div class="control-detail" @click="updateShowWin(false);updateShowPrize(true)">查看奖品详情</div>
-      <div class="control-put">放入微信卡包</div>
+      <div class="control-detail" @click="toDetail">查看奖品详情</div>
+      <div class="control-put" @click="updateShowWin(false)">放入微信卡包</div>
       <div class="control-back" @click="updateShowWin(false)">返回</div>
     </div>
   </div>

@@ -5,9 +5,10 @@ import win from '@/components/common/win'
 import empty from '@/components/common/empty'
 import prize from '@/components/common/prize'
 import myPrizes from '@/components/common/myPrizes'
+import explication from '@/components/common/explication'
 export default {
   name: '',
-  components: { lights, win, empty, prize, myPrizes },
+  components: { lights, win, empty, prize, myPrizes, explication },
   props: [],
   data() {
     return {
@@ -35,6 +36,13 @@ export default {
       return {
         top: `${((this.square.purseY / 375) * 100).toFixed(5)}vw`,
         left: `${((this.square.purseX / 375) * 100).toFixed(5)}vw`,
+        'z-index': 6,
+      }
+    },
+    myStyle() {
+      return {
+        top: `${((this.square.myY / 375) * 100).toFixed(5)}vw`,
+        left: `${((this.square.myX / 375) * 100).toFixed(5)}vw`,
         'z-index': 6,
       }
     },
@@ -111,6 +119,14 @@ export default {
         this.updateShowPrize(val)
       },
     },
+    showExplication: {
+      get() {
+        return this.square.showExplication
+      },
+      set(val) {
+        this.updateShowExplication(val)
+      },
+    },
     showLoading: {
       get() {
         return this.square.updateShowLoading
@@ -122,18 +138,20 @@ export default {
   },
   watch: {},
   mounted() {
-    // if (!this.$route.query.id || !this.$route.query.user) {
-    if (!this.$route.query.user) {
-      this.updateAvailable(false)
-      // this.$toast('活动异常')
-      // return false
+    if (this.$route.query.isTest !== undefined) {
+      this.updateIsTest(this.$route.query.isTest)
     }
-    // this.updateId(this.$route.query.id)
+    if (!this.$route.query.id || !this.$route.query.user) {
+      this.updateAvailable(false)
+      this.$toast('活动异常')
+      return false
+    }
+    this.updateId(this.$route.query.id)
     this.updateUser(this.$route.query.user)
-    // this.getActivity()
+    this.getActivity()
   },
   methods: {
-    ...mapMutations('square', ['updateActiveIndex', 'updateAvailable', 'updateId', 'updateUser', 'updateShowWin', 'updateShowEmpty', 'updateShowMyPrizes', 'updateShowPrize', 'updateShowLoading']),
+    ...mapMutations('square', ['updateIsTest', 'updateActiveIndex', 'updateAvailable', 'updateId', 'updateUser', 'updateShowWin', 'updateShowEmpty', 'updateShowMyPrizes', 'updateShowPrize', 'updateShowExplication', 'updateShowLoading']),
     ...mapActions('square', ['getActivity', 'draw']),
     play() {
       const self = this
@@ -149,7 +167,11 @@ export default {
             clearTimeout(self.timer)
             setTimeout(() => {
               self.finished = true
-              self.showWin = true
+              if (self.square.awards[self.square.prizeIndex].isPrize) {
+                self.showWin = true
+              } else {
+                self.showEmpty = true
+              }
             }, 800)
             return true
           }
@@ -162,6 +184,10 @@ export default {
     init() {
       if (!this.available && !this.square.isTest) {
         this.$toast('缺少openid')
+        return false
+      }
+      if (this.square.last <= 0 && !this.square.isTest) {
+        this.$toast('您已无抽奖次数')
         return false
       }
       if (!this.finished) {
@@ -192,7 +218,6 @@ export default {
           return false
         }
       }
-
       this.startTime = Date.now()
       this.finished = false
       this.play()
@@ -229,11 +254,17 @@ export default {
     <transition name="van-fade">
       <my-prizes v-show="showMyPrizes"></my-prizes>
     </transition>
+    <transition name="van-fade">
+      <explication v-show="showExplication"></explication>
+    </transition>
     <!-- <transition name="van-fade">
       <my-prizes v-show="showMyPrizes"></my-prizes>
     </transition>-->
     <div class="purse-wrapper" :style="purseStyle">
-      <img :src="square.purse" @click="updateShowMyPrizes(true)" />
+      <img :src="square.purse" @click="updateShowExplication(true)" />
+    </div>
+    <div class="purse-wrapper" :style="myStyle">
+      <img :src="square.my" @click="updateShowMyPrizes(true)" />
     </div>
     <div class="banner-wrapper" :style="bannerStyle">
       <img :src="square.banner" />
@@ -276,12 +307,12 @@ export default {
     </div>
     <div v-show="square.basic.showParticipation" class="total">
       已有
-      <span class="value">1</span>
+      <span class="value">{{square.has}}</span>
       人参与
     </div>
     <div v-show="square.basic.showSurplus" class="my">
       您今天还有
-      <span class="value">10</span>
+      <span class="value">{{square.last}}</span>
       次机会
     </div>
     <div class="copyright">页面技术由 晶赞科技 提供</div>

@@ -4,6 +4,7 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 import '@/libs/vant'
+import '@/libs/vue-clipboard2'
 import 'reset-css'
 
 Vue.config.productionTip = false

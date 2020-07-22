@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: '',
   components: {},
@@ -9,22 +9,24 @@ export default {
   },
   computed: {
     ...mapState({
-      config: state => state.squareLottery.config,
+      square: state => state.square,
     }),
     prizes() {
-      return this.config.awards.filter(prize => prize.isPrize === 1)
+      return this.square.awards.filter(prize => prize.isPrize === 1)
     },
     images() {
-      return this.config.images.filter((img, i) => this.config.awards[i].isPrize === 1)
+      return this.square.images.filter((img, i) => this.square.awards[i].isPrize === 1)
     },
     descriptionForHtml() {
       const reg = new RegExp('\\n', 'g')
-      return this.config.basic.description.replace(reg, '<br/>')
+      return this.square.basic.description.replace(reg, '<br/>')
     },
   },
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    ...mapMutations('square', ['updateShowExplication']),
+  },
 }
 </script>
 
@@ -33,16 +35,16 @@ export default {
     <div class="explication-wrapper">
       <div class="explication-wrapper__title">
         活动规则
-        <i class="el-icon-circle-close"></i>
+        <van-icon name="close" @click="updateShowExplication(false)" />
       </div>
-      <perfect-scrollbar class="explication-wrapper__content">
+      <div class="explication-wrapper__content">
         <div class="categroy">
           <div class="categroy-label">
             活动奖品
             <div class="categroy-label-bg"></div>
           </div>
         </div>
-        <perfect-scrollbar class="prizes">
+        <div class="prizes">
           <div v-for="(prize, index) in prizes" class="prizes-item" :key="index">
             <div class="prizes-item__image">
               <img :src="images[index].path" />
@@ -52,7 +54,7 @@ export default {
               <div class="name">{{prize.name}}</div>
             </div>
           </div>
-        </perfect-scrollbar>
+        </div>
         <div class="categroy">
           <div class="categroy-label">
             活动时间
@@ -61,14 +63,14 @@ export default {
         </div>
         <div
           class="time-range"
-        >{{config.basic.timeRange[0]}}&nbsp;至&nbsp;{{config.basic.timeRange[1]}}</div>
+        >{{square.basic.timeRange[0]}}&nbsp;至&nbsp;{{square.basic.timeRange[1]}}</div>
         <div class="categroy">
           <div class="categroy-label">
             活动规则
             <div class="categroy-label-bg"></div>
           </div>
         </div>
-        <div class="rule">每人每日有{{config.rule.total === 'free' ? '不限' : config.rule.max}}次抽奖机会</div>
+        <div class="rule">每人每日有{{square.rule.total === 'free' ? '不限' : square.rule.max}}次抽奖机会</div>
         <div class="categroy">
           <div class="categroy-label">
             活动说明
@@ -76,7 +78,7 @@ export default {
           </div>
         </div>
         <div class="description" v-html="descriptionForHtml"></div>
-      </perfect-scrollbar>
+      </div>
     </div>
   </div>
 </template>
@@ -98,9 +100,9 @@ export default {
       border-bottom: 2px solid #d8dde6;
       text-align: center;
       color: #2b2826;
-      .el-icon-circle-close {
+      i {
         float: right;
-        margin-top: 16px;
+        margin-top: 17px;
         color: rgba($color: #000000, $alpha: 0.45);
         @include text-size(20px, 20px);
         cursor: pointer;
@@ -110,6 +112,8 @@ export default {
       flex: 1;
       height: 0;
       padding: 15px 0;
+      text-align: left;
+      overflow-y: auto;
       .categroy {
         padding: 0 10px;
         @include text-size(14px, 20px);
@@ -134,6 +138,7 @@ export default {
         padding: 12px 10px;
         height: 238px;
         border-bottom: 1px dashed #d8dde6;
+        overflow-y: auto;
         &-item {
           display: flex;
           &:not(:first-child) {
@@ -172,7 +177,7 @@ export default {
       .description {
         margin-bottom: 12px;
         padding: 12px 10px;
-        @include text-size(14px, 20px);
+        @include text-size(14px, 22px);
         border-bottom: 1px dashed #d8dde6;
       }
     }

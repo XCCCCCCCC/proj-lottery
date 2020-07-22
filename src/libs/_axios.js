@@ -12,7 +12,7 @@ axios.defaults.headers.put['Content-Type'] = 'application/json'
 
 // const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://10.8.17.183:8080' : 'http://' + location.host
 const config = {
-  baseURL: process.env.NODE_ENV === 'development' ? '/' : 'https://' + location.host + '/lottery-api',
+  baseURL: process.env.NODE_ENV === 'development' ? '/' : 'https://openapi.zamplus.com/draw',
   timeout: 60000, // Timeout
   withCredentials: true, // Check cross-site Access-Control
 }

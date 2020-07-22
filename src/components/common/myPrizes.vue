@@ -1,5 +1,5 @@
 <script>
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: '',
   components: {},
@@ -12,11 +12,20 @@ export default {
       showEditBtn4: false,
     }
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      myPrizes: state => state.square.myPrizes,
+    }),
+  },
   watch: {},
   mounted() {},
   methods: {
-    ...mapMutations('square', ['updateShowMyPrizes']),
+    ...mapMutations('square', ['updateShowMyPrizes', 'updateShowPrize', 'updateCurPrize']),
+    toDetail(prize) {
+      this.updateCurPrize(prize)
+      this.updateShowMyPrizes(false)
+      this.updateShowPrize(true)
+    },
   },
 }
 </script>
@@ -29,9 +38,9 @@ export default {
         <van-icon name="close" @click="updateShowMyPrizes(false)" />
       </div>
       <div class="my-prizes-wrapper__content">
-        <div class="prize">
+        <div class="prize" v-for="prize in myPrizes" :key="prize.id" @click="toDetail(prize)">
           <div class="name">
-            <span>100元优惠券（示例）</span>
+            <span>{{prize.name}}</span>
             <span>
               <i class="el-icon-arrow-right"></i>
             </span>
@@ -39,19 +48,7 @@ export default {
           <div class="circle left"></div>
           <div class="circle right"></div>
           <div class="divider"></div>
-          <div class="limit">使用期限：2020.06.30 00:00 至 2020.07.30 23:59</div>
-        </div>
-        <div class="prize">
-          <div class="name">
-            <span>100元优惠券（示例）</span>
-            <span>
-              <i class="el-icon-arrow-right"></i>
-            </span>
-          </div>
-          <div class="circle left"></div>
-          <div class="circle right"></div>
-          <div class="divider"></div>
-          <div class="limit">使用期限：2020.06.30 00:00 至 2020.07.30 23:59</div>
+          <div class="limit">使用期限：{{prize.datetimeRange[0]}}&nbsp;至&nbsp;{{prize.datetimeRange[1]}}</div>
         </div>
       </div>
     </div>
@@ -87,7 +84,8 @@ export default {
       flex: 1;
       height: 0;
       margin: 15px 10px;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       .prize {
         position: relative;
         margin-bottom: 12px;

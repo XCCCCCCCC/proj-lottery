@@ -1,4 +1,5 @@
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: '',
   components: {},
@@ -9,7 +10,9 @@ export default {
   computed: {},
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    ...mapMutations('square', ['updateShowEmpty']),
+  },
 }
 </script>
 
@@ -19,8 +22,8 @@ export default {
     <img src="@/assets/images/empty.png" />
     <div class="sorry">很遗憾！与奖品擦肩而过</div>
     <div class="control">
-      <div class="control-again">再来一次</div>
-      <div class="control-back">返回</div>
+      <div class="control-again" @click="updateShowEmpty(false)">再来一次</div>
+      <div class="control-back" @click="updateShowEmpty(false)">返回</div>
     </div>
   </div>
 </template>
