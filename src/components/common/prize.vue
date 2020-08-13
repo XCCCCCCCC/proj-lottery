@@ -216,7 +216,7 @@ export default {
           color: rgba($color: #000000, $alpha: 0.85);
         }
         .label-item {
-          margin-top: 12px;
+          margin-top: 6px;
           .label {
             @include text-size(12px, 20px);
             color: rgba($color: #000000, $alpha: 0.65);
