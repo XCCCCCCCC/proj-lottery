@@ -17,10 +17,10 @@ export default {
   },
   computed: {
     ...mapState({
-      available: state => state.square.available,
-      activeIndex: state => state.square.activeIndex,
-      prizeIndex: state => state.square.prizeIndex,
-      square: state => state.square,
+      available: (state) => state.square.available,
+      activeIndex: (state) => state.square.activeIndex,
+      prizeIndex: (state) => state.square.prizeIndex,
+      square: (state) => state.square,
     }),
     prizeStyle() {
       return {
@@ -58,7 +58,7 @@ export default {
     },
     showLoading: {
       get() {
-        return this.square.updateShowLoading
+        return this.square.showLoading
       },
       set(val) {
         this.updateShowLoading(val)
@@ -122,13 +122,16 @@ export default {
       this.speed = 200
       this.diff = 15
       // 获取
+
       this.getPrize()
     },
     async getPrize() {
+      this.showLoading = true
       const res = await this.draw()
       if (!res) {
         return false
       }
+      this.showLoading = false
       this.startTime = Date.now()
       this.finished = false
       this.play()

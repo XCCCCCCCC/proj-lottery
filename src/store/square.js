@@ -85,8 +85,10 @@ const mutations = {
     }))
     const imageCache1 = new Image()
     const imageCache2 = new Image()
+    const imageCache3 = new Image()
     imageCache1.src = state.aBox
     imageCache2.src = state.startBoxOnHover
+    imageCache3.src = state.prize
   },
   updateShowLoading(state, val) {
     state.showLoading = val
