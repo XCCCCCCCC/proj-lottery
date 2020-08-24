@@ -67,9 +67,14 @@ export default {
   },
   watch: {},
   mounted() {
+    // **禁止遮罩层滚动
+    document.getElementById('prizeWrapper').addEventListener('touchmove', function (event) {
+      event.preventDefault()
+    })
     // if (!this.$route.query.id || !this.$route.query.user) {
     if (!this.$route.query.user) {
       this.updateAvailable(false)
+      console.log('err')
       // this.$toast('活动异常')
       // return false
     }
@@ -129,6 +134,7 @@ export default {
       this.showLoading = true
       const res = await this.draw()
       if (!res) {
+        this.showLoading = false
         return false
       }
       this.showLoading = false
@@ -152,7 +158,7 @@ export default {
     </van-overlay>
     <img :src="square.cBg" />
     <img :src="square.pBg" />
-    <div v-show="showPrize" class="prize-wrapper">
+    <div id="prizeWrapper" v-show="showPrize" class="prize-wrapper">
       <div class="prize-wrapper__tip" :style="prizeStyle" @click="done">
         <img :src="prize.path" />
         <!-- <img src="/uploads/20200528180708_6812.png" /> -->
@@ -194,6 +200,18 @@ export default {
 <style lang="scss">
 #game {
   position: relative;
+  .clearfix {
+    display: block;
+    float: none;
+    clear: both;
+    overflow: hidden;
+    width: auto;
+    height: 0;
+    margin: 0 auto;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+  }
   .loading {
     @include flex-center();
   }
@@ -204,33 +222,37 @@ export default {
   }
   .prize-wrapper {
     @include flex-center(x);
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 1;
     padding-top: 120px;
-    background: rgba($color: #000000, $alpha: 0.6);
+    background: rgba($color: #000000, $alpha: 0.8);
     &__tip {
-      @include flex-center(y);
+      @include flex-center();
+      position: relative;
       box-sizing: border-box;
-      width: 309px;
-      height: 375px;
+      width: 290px;
+      height: 413px;
       background-size: cover;
-      padding: 0 80px 0 80px;
+      padding: 0 25px;
       @include text-size(20px, 28px);
       font-weight: bold;
       color: #000;
       cursor: pointer;
+      img {
+        margin-top: 120px;
+      }
     }
   }
   .game-wrapper {
     position: absolute;
-    top: 310px;
-    left: calc(50% - 156px);
+    top: 406px;
+    left: calc(50% - 154px);
     width: 312px;
-    height: 312px;
+    height: 311px;
     // 盒模型布局
     display: flex;
     align-content: flex-start;
@@ -244,7 +266,7 @@ export default {
       background-size: cover;
       overflow: hidden;
       &.has-margin {
-        margin-bottom: 3px;
+        margin-bottom: 4px;
       }
       img {
         width: 101px;
@@ -255,8 +277,8 @@ export default {
   .description-wrapper {
     position: relative;
     box-sizing: border-box;
-    padding: 70px 20px 10px 20px;
-    height: 295px;
+    padding: 45px 20px 10px 20px;
+    height: 269.5px;
     background-size: cover;
     text-align: left;
     @include text-size(12px, 24px);
