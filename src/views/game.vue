@@ -236,21 +236,22 @@ export default {
       box-sizing: border-box;
       width: 290px;
       height: 413px;
-      background-size: cover;
-      padding: 0 25px;
+      background-size: 100% auto;
+      padding: 0 60px;
       @include text-size(20px, 28px);
       font-weight: bold;
       color: #000;
       cursor: pointer;
       img {
-        margin-top: 120px;
+        margin-left: 12px;
+        margin-top: 10px;
       }
     }
   }
   .game-wrapper {
     position: absolute;
-    top: 406px;
-    left: calc(50% - 154px);
+    top: 505px;
+    left: calc(50% - 156px);
     width: 312px;
     height: 311px;
     // 盒模型布局
